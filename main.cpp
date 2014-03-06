@@ -3,7 +3,6 @@
 #include <string>
 #include <math.h>
 
-
 using namespace std;
 
 int main()
@@ -14,12 +13,13 @@ int main()
     int* horizontal_convolution_data_5x5;
     int* vertical_convolution_data_5x5;//holds data read from image
     int pixel_count = 250000;
+    unsigned int counter = 0;
 
-    ifstream read_image("500.raw", ios::in|ios::binary);//image file, opened for reading, read in binary
-    fstream horizontal_convolution_3x3("average3x3.raw", ios::out|fstream::binary);
-    fstream vertical_convolution_3x3("gausian3x3.raw", ios::out|fstream::binary);
-    fstream horizontal_convolution_5x5("average5x5.raw", ios::out|fstream::binary);
-    fstream vertical_convolution_5x5("gausian5x5.raw", ios::out|fstream::binary);
+    ifstream read_image("gray.raw", ios::in|ios::binary);//image file, opened for reading, read in binary
+    fstream horizontal_convolution_3x3("horizontal_3x3.raw", ios::out|fstream::binary);
+    //fstream vertical_convolution_3x3("vertical3x3.raw", ios::out|fstream::binary);
+    //fstream horizontal_convolution_5x5("horizontal5x5.raw", ios::out|fstream::binary);
+    //fstream vertical_convolution_5x5("vertical5x5.raw", ios::out|fstream::binary);
 
 
     horizontal_convolution_data_3x3 = new int[pixel_count];//Size of picture data is set.
@@ -38,23 +38,33 @@ int main()
 
     //load arrays with image data
     while(getline(read_image, line)){
+        //cout << "while" << endl;
         for(int i=0; i<line.size(); i++){
+
             pixel_count++;//count pixels
-            horizontal_convolution_data_3x3[i] = (unsigned char)line[i];
-            vertical_convolution_data_3x3[i] = (unsigned char)line[i];
-            horizontal_convolution_data_5x5[i] = (unsigned char)line[i];
-            vertical_convolution_data_5x5[i] = (unsigned char)line[i];
+            //horizontal_convolution_3x3.put(line[i]);
+            horizontal_convolution_data_3x3[counter] = (unsigned char)line[i];
+            vertical_convolution_data_3x3[counter] = (unsigned char)line[i];
+            horizontal_convolution_data_5x5[counter] = (unsigned char)line[i];
+            vertical_convolution_data_5x5[counter] = (unsigned char)line[i];
+            //cout << (int)line[i] << ", ";
+            //cout << i << endl;
+            counter++;
         }//end for
+        counter ++;
+        horizontal_convolution_data_3x3[counter] = (unsigned char)'\n';
+
     }//end while
-
+    cout << counter << endl;
     //output results of filters
+//    cout << horizontal_convolution_data_3x3.size();
     for(int j=0; j<250000; j++){
-
-        horizontal_convolution_3x3.put(horizontal_convolution_data_3x3[j]);
-        vertical_convolution_3x3.put(vertical_convolution_data_3x3[j]);
-        horizontal_convolution_5x5.put(horizontal_convolution_data_5x5[j]);
-        vertical_convolution_5x5.put(vertical_convolution_data_5x5[j]);
+        horizontal_convolution_3x3 << (unsigned char)horizontal_convolution_data_3x3[j];
+        //horizontal_convolution_3x3.put((unsigned char)horizontal_convolution_data_3x3[j]);
+        //vertical_convolution_3x3.put(vertical_convolution_data_3x3[j]);
+        //horizontal_convolution_5x5.put(horizontal_convolution_data_5x5[j]);
+        //vertical_convolution_5x5.put(vertical_convolution_data_5x5[j]);
     }
-    cout << "exit";
+
     return 0;
 }
